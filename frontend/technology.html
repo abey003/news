@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Elite News - Technology</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>The Elite News</h1>
+    <h4 style="font-style: italic;">"Where Prestige Meets Truth"</h4>
+    <div class="date" id="date">Today's News</div>
+    <nav>
+      <a href="index.html">General</a>
+      <a href="business.html">Business</a>
+      <a href="technology.html">Technology</a>
+      <a href="health.html">Health</a>
+      <a href="science.html">Science</a>
+      <a href="sports.html">Sports</a>
+    </nav>
+  </header>
+  <div id="news-container"></div>
+  <footer>
+    <p>© 2024 The Elite News. All Rights Reserved.</p>
+  </footer>
+  <script>
+
+    const dateElement = document.getElementById('date');
+
+    // Display current date
+    const today = new Date();
+    dateElement.innerText = `Today's News - ${today.toDateString()}`;
+
+    const apiUrl = `http://localhost:5000/technology`;
+    const newsContainer = document.getElementById('news-container');
+
+    async function fetchNews() {
+      try {
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+        console.log(data);
+
+        if (data.status === 'ok' && data.articles.length > 0) {
+
+          // Render the news articles
+          data.articles.forEach(article => {
+            const articleDiv = document.createElement('div');
+            articleDiv.classList.add('article');
+            articleDiv.innerHTML = `
+              <h2>${article.title}</h2>
+              ${article.summary ? `<p>${article.summary}</p>` : ''}
+            `;
+            newsContainer.appendChild(articleDiv);
+          });
+        } else {
+          newsContainer.innerHTML = `<p>No news articles found.</p>`;
+        }
+        } catch (error) {
+          newsContainer.innerHTML = `<p>Error fetching news. Please try again later.</p>`;
+          console.error('Error:', error);
+        }
+      }
+
+    fetchNews();
+  </script>
+</body>
+</html>
